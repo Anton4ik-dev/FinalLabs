@@ -32,7 +32,7 @@ namespace BallSystem
             _layerService = layerService;
             _tilePool = tilePool;
             _ballActions = new BallActions(_moveSpeed, _jumpStrength, _rb, _camera);
-            _inputListener.Initialize(_ballActions);
+            _inputListener.Initialize(_ballActions, _gameController);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)

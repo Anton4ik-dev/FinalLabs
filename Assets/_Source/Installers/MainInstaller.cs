@@ -3,6 +3,7 @@ using Pool;
 using Service;
 using Services;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -13,6 +14,7 @@ public class MainInstaller : MonoInstaller
     [SerializeField] private int _tileCount;
     [SerializeField] private bool _autoExpand;
     [SerializeField] private Vector3 _distance;
+    [SerializeField] private TextMeshProUGUI _startText;
 
     public override void InstallBindings()
     {
@@ -21,6 +23,7 @@ public class MainInstaller : MonoInstaller
         Container.Bind<int>().FromInstance(_tileCount).NonLazy();
         Container.Bind<bool>().FromInstance(_autoExpand).NonLazy();
         Container.Bind<Vector3>().FromInstance(_distance).NonLazy();
+        Container.Bind<TextMeshProUGUI>().FromInstance(_startText).NonLazy();
 
         Container.Bind<RandomService>().AsSingle().NonLazy();
         Container.Bind<TilePool>().AsSingle().NonLazy();
