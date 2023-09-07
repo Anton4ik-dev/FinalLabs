@@ -1,19 +1,24 @@
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace ScoreSystem
 {
     public class ScoreView : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _scoreText;
-        [SerializeField] private int _addBonus;
 
-        private int _score = 0;
+        private ScoreController _scoreController;
 
-        public void AddScore()
+        [Inject]
+        public void Construct(ScoreController scoreController)
         {
-            _score += _addBonus;
-            _scoreText.text = $"{_score}";
+            _scoreController = scoreController;
+        }
+
+        public void DrawScore()
+        {
+            _scoreText.text = $"{_scoreController.AddScore()}";
         }
     }
 }

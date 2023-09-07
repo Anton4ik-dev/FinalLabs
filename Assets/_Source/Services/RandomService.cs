@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Service
+namespace Services
 {
-    public class RandomService
+    public static class RandomService
     {
-        private GameObject _newPrefab;
-        private GameObject _lastPrefab;
+        private static GameObject _lastPrefab;
 
-        public GameObject GetRandomElement(List<GameObject> prefabs)
+        public static GameObject GetRandomElement(List<GameObject> prefabs)
         {
+            GameObject newPrefab;
             do
-                _newPrefab = prefabs[Random.Range(0, prefabs.Count)];
-            while (_newPrefab == _lastPrefab);
+                newPrefab = prefabs[Random.Range(0, prefabs.Count)];
+            while (newPrefab == _lastPrefab);
 
-            _lastPrefab = _newPrefab;
+            _lastPrefab = newPrefab;
             return _lastPrefab;
         }
     }

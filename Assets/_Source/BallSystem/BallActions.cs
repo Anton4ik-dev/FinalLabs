@@ -1,6 +1,7 @@
-using Game;
+using Core;
 using Pool;
 using ScoreSystem;
+using ScriptableObjects;
 using UnityEngine;
 
 namespace BallSystem
@@ -11,13 +12,19 @@ namespace BallSystem
         private float _jumpStrength;
         private Rigidbody2D _rb;
         private Camera _camera;
+        private ScoreView _scoreView;
+        private Game _game;
+        private TilePool _tilePool;
 
-        public BallActions(float moveSpeed, float jumpStrength, Rigidbody2D rb, Camera camera)
+        public BallActions(BallSO ballSo, Rigidbody2D rb, Camera camera, ScoreView scoreView, Game game, TilePool tilePool)
         {
-            _moveSpeed = moveSpeed;
-            _jumpStrength = jumpStrength;
+            _moveSpeed = ballSo.MoveSpeed;
+            _jumpStrength = ballSo.JumpStrength;
             _rb = rb;
             _camera = camera;
+            _scoreView = scoreView;
+            _game = game;
+            _tilePool = tilePool;
         }
 
         public void Move()
@@ -27,21 +34,21 @@ namespace BallSystem
             _camera.transform.position += moveDistance;
         }
 
-        public void Collect(ScoreView scoreView, GameObject collision)
+        public void Collect(GameObject collision)
         {
-            scoreView.AddScore();
+            _scoreView.DrawScore();
             collision.SetActive(false);
         }
 
-        public void SpawnTile(TilePool tilePool, GameObject collision)
+        public void SpawnTile(GameObject collision)
         {
-            tilePool.GetFreeElement();
+            _tilePool.GetFreeElement();
             collision.SetActive(false);
         }
 
-        public void Lose(GameController gameController)
+        public void Lose()
         {
-            gameController.RestartGame();
+            _game.RestartGame();
         }
 
         public void Jump()

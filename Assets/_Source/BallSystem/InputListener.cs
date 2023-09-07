@@ -1,33 +1,48 @@
-using Game;
+using Core;
 using UnityEngine;
+using Zenject;
 
 namespace BallSystem
 {
     public class InputListener : MonoBehaviour
     {
         private BallActions _ballActions;
-        private GameController _gameController;
+        private Game _game;
         private bool _isStartGame;
 
         private void Update()
         {
+            Move();
+            Jump();
+            StartGame();
+        }
+
+        private void Move()
+        {
             _ballActions.Move();
+        }
 
-            if(Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
+        private void Jump()
+        {
+            if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
                 _ballActions.Jump();
+        }
 
-            if(Input.GetKeyDown(KeyCode.Space) && !_isStartGame)
+        private void StartGame()
+        {
+            if (!_isStartGame && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButton(0)))
             {
-                _gameController.StartGame();
+                _game.StartGame();
                 _isStartGame = !_isStartGame;
             }
         }
 
-        public void Initialize(BallActions characterActions, GameController gameController)
+        [Inject]
+        public void Construct(BallActions characterActions, Game game)
         {
             _ballActions = characterActions;
-            _gameController = gameController;
-            _gameController.PauseGame();
+            _game = game;
+            _game.PauseGame();
         }
     }
 }

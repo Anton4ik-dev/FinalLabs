@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace InteractiveObjects
@@ -6,21 +7,23 @@ namespace InteractiveObjects
     {
         [SerializeField] private Transform _top;
         [SerializeField] private Transform _bot;
-        [SerializeField] private float _speed;
+        [SerializeField] private float _duration;
 
-        private bool _isToTop;
-
-        private void Update()
+        private void Awake()
         {
-            if (transform.position.y < _top.position.y && _isToTop)
-                transform.position += transform.up * _speed * Time.deltaTime;
-            else if(transform.position.y > _bot.position.y && !_isToTop)
-                transform.position -= transform.up * _speed * Time.deltaTime;
+            MoveToTop();
+        }
 
-            if (transform.position.y >= _top.position.y)
-                _isToTop = !_isToTop;
-            else if (transform.position.y <= _bot.position.y)
-                _isToTop = !_isToTop;
+        private void MoveToTop()
+        {
+            Tween tween = transform.DOMoveY(_top.position.y, _duration);
+            tween.OnComplete(MoveToBot);
+        }
+
+        private void MoveToBot()
+        {
+            Tween tween = transform.DOMoveY(_bot.position.y, _duration);
+            tween.OnComplete(MoveToTop);
         }
     }
 }

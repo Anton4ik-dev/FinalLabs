@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Services
 {
-    public class LayerService
+    public static class LayerService
     {
-        public bool CheckLayersEquality(LayerMask objectLayer, LayerMask requiredLayer) => ((1 << objectLayer) & requiredLayer) > 0;
+        public static bool CheckLayersEquality(LayerMask objectLayer, LayerMask requiredLayer) => ((1 << objectLayer) & requiredLayer) > 0;
     }
 }

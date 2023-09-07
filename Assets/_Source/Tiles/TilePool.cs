@@ -1,4 +1,5 @@
-using Service;
+using ScriptableObjects;
+using Services;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,21 +13,18 @@ namespace Pool
         private float _roadLength;
         private bool _autoExpand;
         private Vector3 _distance;
-        private RandomService _randomService;
 
         private List<GameObject> _pool;
 
         [Inject]
-        public TilePool(List<GameObject> prefabs, float roadLength, bool autoExpand, Vector3 startPosition, int count, RandomService randomService)
+        public TilePool(TilePoolSO tilePoolSo)
         {
-            _prefabs = prefabs;
-            _roadLength = roadLength;
-            _autoExpand = autoExpand;
-            _distance = startPosition;
+            _prefabs = tilePoolSo.Prefabs;
+            _roadLength = tilePoolSo.RoadLength;
+            _autoExpand = tilePoolSo.AutoExpand;
+            _distance = tilePoolSo.Distance;
 
-            _randomService = randomService;
-
-            CreatePool(count);
+            CreatePool(tilePoolSo.TileCount);
         }
 
         public GameObject GetFreeElement()
@@ -52,8 +50,8 @@ namespace Pool
 
         private GameObject CreateObject(bool isActiveByDefault = false)
         {
-            GameObject createdObject = GameObject.Instantiate(_randomService.GetRandomElement(_prefabs), _distance, new Quaternion());
-            createdObject.gameObject.SetActive(isActiveByDefault);
+            GameObject createdObject = GameObject.Instantiate(RandomService.GetRandomElement(_prefabs), _distance, new Quaternion());
+            createdObject.SetActive(isActiveByDefault);
             _pool.Add(createdObject);
 
             if (isActiveByDefault)
@@ -74,10 +72,10 @@ namespace Pool
 
             if (unActivePool.Count != 0)
             {
-                element = _randomService.GetRandomElement(unActivePool);
+                element = RandomService.GetRandomElement(unActivePool);
                 element.transform.position = _distance;
                 _distance.x += _roadLength;
-                element.gameObject.SetActive(true);
+                element.SetActive(true);
                 return true;
             }
 
