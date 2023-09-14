@@ -1,6 +1,6 @@
 using Services;
 using UnityEngine;
-using Zenject;
+using VContainer;
 
 namespace BallSystem
 {

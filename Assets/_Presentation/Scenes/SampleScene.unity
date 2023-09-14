@@ -441,7 +441,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 783457387}
-  - component: {fileID: 783457386}
   - component: {fileID: 783457388}
   m_Layer: 0
   m_Name: SceneContext
@@ -450,38 +449,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &783457386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 783457384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89715ad69b973a14899afa2c6730b30b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 783457388}
-  _installerPrefabs: []
-  _autoRun: 1
-  OnPreInstall:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPostInstall:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPreResolve:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPostResolve:
-    m_PersistentCalls:
-      m_Calls: []
-  _parentNewObjectsUnderSceneContext: 0
-  _contractNames: []
-  _parentContractNames: []
 --- !u!4 &783457387
 Transform:
   m_ObjectHideFlags: 0
@@ -506,9 +473,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 783457384}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03e8241ef43ea45498045a4599aa4dc1, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a1a921be7f934140bbdc0d840a6a110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: 
+  autoRun: 1
+  autoInjectGameObjects:
+  - {fileID: 1236845209}
+  - {fileID: 896466822}
+  - {fileID: 431933840}
+  - {fileID: 222771655}
   _tilePoolSo: {fileID: 11400000, guid: db7eae58b1bfd3745ac22b0699bd1d1b, type: 2}
   _ballSo: {fileID: 11400000, guid: 13c9bb3acc1f3a14d9ebec46049cf22e, type: 2}
   _rb: {fileID: 1236845213}

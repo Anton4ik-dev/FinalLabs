@@ -3,7 +3,7 @@ using Services;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+using VContainer;
 
 namespace Pool
 {

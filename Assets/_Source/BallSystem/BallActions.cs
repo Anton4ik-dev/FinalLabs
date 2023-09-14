@@ -3,6 +3,7 @@ using Pool;
 using ScoreSystem;
 using ScriptableObjects;
 using UnityEngine;
+using VContainer;
 
 namespace BallSystem
 {
@@ -13,17 +14,18 @@ namespace BallSystem
         private Rigidbody2D _rb;
         private Camera _camera;
         private ScoreView _scoreView;
-        private Game _game;
+        private GameStateMachine _gameStateMachine;
         private TilePool _tilePool;
 
-        public BallActions(BallSO ballSo, Rigidbody2D rb, Camera camera, ScoreView scoreView, Game game, TilePool tilePool)
+        [Inject]
+        public BallActions(BallSO ballSo, Rigidbody2D rb, Camera camera, ScoreView scoreView, GameStateMachine gameStateMachine, TilePool tilePool)
         {
             _moveSpeed = ballSo.MoveSpeed;
             _jumpStrength = ballSo.JumpStrength;
             _rb = rb;
             _camera = camera;
             _scoreView = scoreView;
-            _game = game;
+            _gameStateMachine = gameStateMachine;
             _tilePool = tilePool;
         }
 
@@ -48,7 +50,7 @@ namespace BallSystem
 
         public void Lose()
         {
-            _game.RestartGame();
+            _gameStateMachine.ChangeState(typeof(Lose));
         }
 
         public void Jump()

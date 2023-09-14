@@ -1,6 +1,6 @@
 using TMPro;
 using UnityEngine;
-using Zenject;
+using VContainer;
 
 namespace ScoreSystem
 {
