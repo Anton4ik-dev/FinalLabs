@@ -16,7 +16,7 @@ MonoBehaviour:
   - {fileID: -4768050487311113024, guid: 87a9e6ba4c702254cbb8de3a1db52d88, type: 3}
   - {fileID: 3580145457227330698, guid: d9ffc14c4b3fd3c4d93a1adc7d3698a8, type: 3}
   - {fileID: -134667364095202570, guid: c70ff7ac26f85284e931c4c8eaa2193e, type: 3}
-  _roadLength: 4.6238
-  _tileCount: 6
+  _roadLength: 18
+  _tileCount: 3
   _autoExpand: 1
   _distance: {x: 0, y: 0, z: 0}
