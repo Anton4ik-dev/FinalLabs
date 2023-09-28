@@ -9,7 +9,7 @@ public class LogSystem : JobComponentSystem
     {
         JobHandle jobHandle = Entities
             .WithName("LogSystem")
-            .ForEach((ref PrefabData prefabData) =>
+            .ForEach((ref PrefabLog prefabData) =>
             {
                 if(prefabData.TimeLeft <= 0)
                 {

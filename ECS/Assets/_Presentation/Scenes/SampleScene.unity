@@ -154,6 +154,7 @@ MonoBehaviour:
   _objectCount: 100
   _time: 1
   _range: 10
+  _speed: 0.001
 --- !u!4 &22785932
 Transform:
   m_ObjectHideFlags: 0

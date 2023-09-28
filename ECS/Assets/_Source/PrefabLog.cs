@@ -1,10 +1,9 @@
 ﻿using Unity.Entities;
 
-public struct PrefabData : IComponentData
+public struct PrefabLog : IComponentData
 {
     public float Time;
     public float TimeLeft;
     public float TimeDelta;
     public int Number;
-    public float Range;
 }

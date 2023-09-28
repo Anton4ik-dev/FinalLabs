@@ -10,6 +10,7 @@ public class ECSStarter : MonoBehaviour
     [SerializeField] private int _objectCount;
     [SerializeField] private float _time;
     [SerializeField] private float _range;
+    [SerializeField] private float _speed;
 
     private EntityManager _entityManager;
 
@@ -17,9 +18,11 @@ public class ECSStarter : MonoBehaviour
     {
         _entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        GameObjectConversionSettings settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+        GameObjectConversionSettings settings = GameObjectConversionSettings
+            .FromWorld(World.DefaultGameObjectInjectionWorld, null);
 
-        Entity prefabUnity = GameObjectConversionUtility.ConvertGameObjectHierarchy(_prefab, settings);
+        Entity prefabUnity = GameObjectConversionUtility
+            .ConvertGameObjectHierarchy(_prefab, settings);
 
         for (int i = 0; i < _objectCount; i++)
         {
@@ -28,7 +31,11 @@ public class ECSStarter : MonoBehaviour
             Vector3 position = transform.TransformPoint(positionVector);
 
             _entityManager.SetComponentData(prefabInstance, new Translation { Value = position });
-            _entityManager.AddComponentData(prefabInstance, new PrefabData { Time = _time, TimeLeft = _time, TimeDelta = Time.fixedDeltaTime, Number = Random.Range(1,100), Range = _range});
+            _entityManager.AddComponentData(prefabInstance, new PrefabMovement { Speed = _speed, Range = _range });
+            _entityManager.AddComponentData(prefabInstance, new PrefabLog { Time = _time,
+                TimeLeft = _time,
+                TimeDelta = Time.fixedDeltaTime,
+                Number = Random.Range(1,100)});
         }
     }
 }
