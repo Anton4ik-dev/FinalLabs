@@ -7,7 +7,7 @@ namespace Voody.UniLeo.Lite
 {
     public static class ConversionSystemExtension
     {
-        public static EcsSystems ConvertScene(this EcsSystems ecsSystems)
+        public static IEcsSystems ConvertScene(this IEcsSystems ecsSystems)
         {
             ecsSystems.Add(new WorldInitSystem());
             return ecsSystems;
