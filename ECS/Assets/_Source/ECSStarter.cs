@@ -8,9 +8,10 @@ public class ECSStarter : MonoBehaviour
 {
     [SerializeField] private GameObject _prefab;
     [SerializeField] private int _objectCount;
-    [SerializeField] private float _time;
-    [SerializeField] private float _range;
     [SerializeField] private float _speed;
+    [SerializeField] private float _health;
+    [SerializeField] private float _changeSpeed;
+    [SerializeField] private float _changeHealth;
 
     private EntityManager _entityManager;
 
@@ -31,11 +32,8 @@ public class ECSStarter : MonoBehaviour
             Vector3 position = transform.TransformPoint(positionVector);
 
             _entityManager.SetComponentData(prefabInstance, new Translation { Value = position });
-            _entityManager.AddComponentData(prefabInstance, new PrefabMovement { Speed = _speed, Range = _range });
-            _entityManager.AddComponentData(prefabInstance, new PrefabLog { Time = _time,
-                TimeLeft = _time,
-                TimeDelta = Time.fixedDeltaTime,
-                Number = Random.Range(1,100)});
+            _entityManager.AddComponentData(prefabInstance, new PrefabWarrior { Speed = _speed, Health = _health});
+            _entityManager.AddComponentData(prefabInstance, new PrefabInput { ChangeSpeed = _changeSpeed, ChangeHealth = _changeHealth});
         }
     }
 }

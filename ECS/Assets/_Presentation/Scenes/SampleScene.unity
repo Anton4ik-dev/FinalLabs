@@ -152,9 +152,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefab: {fileID: 2003941642789132329, guid: 28db3ae2cbe0cf6428918d0f82b093b0, type: 3}
   _objectCount: 100
-  _time: 1
-  _range: 10
-  _speed: 0.001
+  _speed: 0.5
+  _health: 100
+  _changeSpeed: 0.5
+  _changeHealth: 10
 --- !u!4 &22785932
 Transform:
   m_ObjectHideFlags: 0
