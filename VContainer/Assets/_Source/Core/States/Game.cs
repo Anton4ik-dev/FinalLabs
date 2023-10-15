@@ -4,7 +4,7 @@ using VContainer;
 
 namespace Core
 {
-    public class Game : AStateGame
+    public class Game : AGameState
     {
         [SerializeField] private GameView _gameView;
 

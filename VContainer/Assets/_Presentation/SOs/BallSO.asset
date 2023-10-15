@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BallSO
   m_EditorClassIdentifier: 
   _moveSpeed: 4
-  _jumpStrength: 0.1
+  _jumpStrength: 0.5

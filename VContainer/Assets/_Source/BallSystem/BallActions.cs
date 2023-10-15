@@ -2,10 +2,8 @@ using Core;
 using TileSystem;
 using ScoreSystem;
 using ScriptableObjects;
-using System;
 using UnityEngine;
 using VContainer;
-using System.Collections.Generic;
 
 namespace BallSystem
 {
@@ -16,25 +14,19 @@ namespace BallSystem
         private Rigidbody2D _rb;
         private Camera _camera;
         private ScoreView _scoreView;
-        private GameStateMachine<Type> _gameStateMachine;
-        private TilePool<MonoBehaviour> _tilePool;
+        private IStateMachine _gameStateMachine;
+        private IPool _tilePool;
 
         [Inject]
-        public BallActions(BallSO ballSo, Rigidbody2D rb, Camera camera, ScoreView scoreView, IEnumerable<IStateMachine> gameStateMachines, IEnumerable<IPool> tilePools)
+        public BallActions(BallSO ballSo, Rigidbody2D rb, Camera camera, ScoreView scoreView, IStateMachine gameStateMachine, IPool tilePool)
         {
             _moveSpeed = ballSo.MoveSpeed;
             _jumpStrength = ballSo.JumpStrength;
             _rb = rb;
             _camera = camera;
             _scoreView = scoreView;
-            foreach (GameStateMachine<Type> gameStateMachine in gameStateMachines)
-            {
-                _gameStateMachine = gameStateMachine;
-            }
-            foreach (TilePool<MonoBehaviour> tilePool in tilePools)
-            {
-                _tilePool = tilePool;
-            }
+            _gameStateMachine = gameStateMachine;
+            _tilePool = tilePool;
         }
 
         public void Move()
@@ -58,7 +50,7 @@ namespace BallSystem
 
         public void Lose()
         {
-            _gameStateMachine.ChangeState(typeof(Lose));
+            _gameStateMachine.ChangeState<Lose>();
         }
 
         public void Jump()

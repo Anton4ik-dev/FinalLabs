@@ -27,11 +27,11 @@ namespace Core
             builder.RegisterComponent(_scoreView);
             builder.RegisterComponent(_gameView);
 
-            builder.Register<AStateGame, Game>(Lifetime.Scoped);
-            builder.Register<AStateGame, Pause>(Lifetime.Scoped);
-            builder.Register<AStateGame, Lose>(Lifetime.Scoped);
+            builder.Register<AGameState, Game>(Lifetime.Scoped);
+            builder.Register<AGameState, Pause>(Lifetime.Scoped);
+            builder.Register<AGameState, Lose>(Lifetime.Scoped);
 
-            builder.Register<IStateMachine, GameStateMachine<Type>>(Lifetime.Scoped);
+            builder.Register<IStateMachine, GameStateMachine<AGameState>>(Lifetime.Scoped);
             builder.Register<IPool, TilePool<MonoBehaviour>>(Lifetime.Scoped);
 
             builder.Register<ScoreController>(Lifetime.Singleton);

@@ -4,30 +4,28 @@ using VContainer;
 
 namespace Core
 {
-    public class GameStateMachine<T> : IStateMachine where T : Type
+    public class GameStateMachine<T> : IStateMachine where T : AGameState
     {
-        private Dictionary<T, AStateGame> _states;
-        private AStateGame _activeState;
+        private Dictionary<Type, T> _states;
+        private AGameState _activeState;
 
         [Inject]
-        public GameStateMachine(IEnumerable<AStateGame> states)
+        public GameStateMachine(IEnumerable<AGameState> states)
         {
-            _states = new Dictionary<T, AStateGame>();
-            foreach(AStateGame state in states)
+            _states = new Dictionary<Type, T>();
+            foreach (AGameState state in states)
             {
-                _states.Add((T)state.GetType(), state);
+                _states.Add(state.GetType(), (T)state);
             }
         }
 
-        public void ChangeState(Type type)
+        public void ChangeState<T>() where T : AGameState
         {
-            _activeState.Exit();
-            StartState((T)type);
-        }
+            if (!_states.ContainsKey(typeof(T)))
+                return;
 
-        public void StartState(Type type)
-        {
-            _activeState = _states[(T)type];
+            _activeState?.Exit();
+            _activeState = _states[typeof(T)];
             _activeState.Enter();
         }
     }
