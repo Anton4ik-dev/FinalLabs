@@ -3,7 +3,6 @@ using Mirror;
 using UnityEngine.UI;
 using PlayerSystem;
 using TMPro;
-using Zenject;
 
 namespace LobbySystem
 {
@@ -14,6 +13,7 @@ namespace LobbySystem
         [SerializeField] private Button _joinButton;
         [SerializeField] private Button _beginGameButton;
         [SerializeField] private TMP_InputField _joinInput;
+        [SerializeField] private TMP_InputField _nameInput;
         [SerializeField] private TextMeshProUGUI _idText;
         
         [SerializeField] private PlayerData _playerDataPrefab;
@@ -21,8 +21,8 @@ namespace LobbySystem
 
         [SerializeField] private Transform _playerDataHolder;
 
-        private SyncList<Match> _matches = new SyncList<Match>();
-        private SyncList<string> _matchIDs = new SyncList<string>();
+        private readonly SyncList<Match> _matches = new SyncList<Match>();
+        private readonly SyncList<string> _matchIDs = new SyncList<string>();
 
         private void Start()
         {
@@ -32,16 +32,6 @@ namespace LobbySystem
         private void OnDestroy()
         {
             Expose();
-        }
-
-        private void Update()
-        {
-            PlayerController[] players = FindObjectsOfType<PlayerController>();
-
-            for (int i = 0; i < players.Length; i++)
-            {
-                players[i].gameObject.transform.localScale = Vector3.zero;
-            }
         }
 
         private void Bind()
@@ -68,13 +58,13 @@ namespace LobbySystem
         private void Host()
         {
             ChangeButtonsState(false);
-            PlayerController.LocalPlayer.HostGame();
+            PlayerController.LocalPlayer.HostGame(_nameInput.text);
         }
 
         private void Join()
         {
             ChangeButtonsState(false);
-            PlayerController.LocalPlayer.JoinGame(_joinInput.text.ToUpper());
+            PlayerController.LocalPlayer.JoinGame(_joinInput.text.ToUpper(), _nameInput.text);
         }
 
         private void StartGame()
@@ -87,7 +77,7 @@ namespace LobbySystem
             if (success)
             {
                 _lobbyCanvas.enabled = true;
-                SpawnPlayerUIPrefab(PlayerController.LocalPlayer);
+                SpawnPlayerPrefab(PlayerController.LocalPlayer);
                 _idText.text = matchID;
                 _beginGameButton.interactable = isHost;
             }
@@ -126,10 +116,10 @@ namespace LobbySystem
             return false;
         }
 
-        public void SpawnPlayerUIPrefab(PlayerController player)
+        public void SpawnPlayerPrefab(PlayerController player)
         {
-            PlayerData newUIPlayer = Instantiate(_playerDataPrefab, _playerDataHolder);
-            newUIPlayer.SetPlayer(player);
+            PlayerData newPlayer = Instantiate(_playerDataPrefab, _playerDataHolder);
+            newPlayer.SetPlayer(player);
         }
 
         public void BeginGame(string matchID)

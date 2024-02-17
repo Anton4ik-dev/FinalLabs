@@ -8,11 +8,6 @@ namespace PlayerSystem
     {
         private List<PlayerController> _players = new List<PlayerController>();
 
-        private void Start()
-        {
-            DontDestroyOnLoad(gameObject);
-        }
-
         private void Update()
         {
             foreach(PlayerController player in _players)

@@ -10,7 +10,7 @@ namespace LobbySystem
 
         public void SetPlayer(PlayerController player)
         {
-            _playerName.text = player.name;
+            _playerName.text = player.GetName();
         }
     }
 }

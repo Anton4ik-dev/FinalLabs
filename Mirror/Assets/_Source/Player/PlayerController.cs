@@ -1,5 +1,6 @@
 using LobbySystem;
 using Mirror;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -10,10 +11,13 @@ namespace PlayerSystem
     {
         [SerializeField] private float _speed;
         [SerializeField] private NetworkMatch _networkMatch;
+        [SerializeField] private TextMeshProUGUI _nameText;
 
         private InputListener _inputListener;
         private MainMenu _mainMenu;
-        [SyncVar] private string matchID;
+
+        [SyncVar] private string _matchID;
+        [SyncVar] private string _name;
 
         public static PlayerController LocalPlayer;
 
@@ -27,10 +31,12 @@ namespace PlayerSystem
 
         private void Start()
         {
+            DontDestroyOnLoad(gameObject);
+            transform.localScale = new Vector3(1, 1, 1);
             if (isLocalPlayer)
                 LocalPlayer = this;
             else
-                _mainMenu.SpawnPlayerUIPrefab(this);
+                _mainMenu.SpawnPlayerPrefab(this);
         }
 
         private void OnDestroy()
@@ -49,68 +55,69 @@ namespace PlayerSystem
         }
 
         [Command]
-        private void CmdHostGame(string ID)
+        private void CmdHostGame(string ID, string name)
         {
-            matchID = ID;
+            _matchID = ID;
+            _name = name;
+            _nameText.text = name;
+
             if (_mainMenu.HostGame(ID, this))
             {
-                Debug.Log("Лобби было создано успешно");
                 _networkMatch.matchId = ID.ToGuid();
-                TargetHostGame(true, ID);
+                TargetHostGame(true, ID, name);
             }
             else
             {
-                Debug.Log("Ошибка в создании лобби");
-                TargetHostGame(false, ID);
+                TargetHostGame(false, ID, name);
             }
         }
 
         [TargetRpc]
-        private void TargetHostGame(bool success, string ID)
+        private void TargetHostGame(bool success, string ID, string name)
         {
-            matchID = ID;
-            Debug.Log($"ID {matchID} == {ID}");
+            _matchID = ID;
+            _name = name;
+            _nameText.text = name;
+
             _mainMenu.CheckSuccess(success, ID, true);
         }
 
         [Command]
-        private void CmdJoinGame(string ID)
+        private void CmdJoinGame(string ID, string name)
         {
-            matchID = ID;
+            _matchID = ID;
+            _name = name;
+            _nameText.text = name;
+
             if (_mainMenu.JoinGame(ID, this))
             {
-                Debug.Log("Успешное подключение к лобби");
                 _networkMatch.matchId = ID.ToGuid();
-                TargetJoinGame(true, ID);
+                TargetJoinGame(true, ID, name);
             }
             else
             {
-                Debug.Log("Не удалось подключиться");
-                TargetJoinGame(false, ID);
+                TargetJoinGame(false, ID, name);
             }
         }
 
         [TargetRpc]
-        private void TargetJoinGame(bool success, string ID)
+        private void TargetJoinGame(bool success, string ID, string name)
         {
-            matchID = ID;
-            Debug.Log($"ID {matchID} == {ID}");
+            _matchID = ID;
+            _name = name;
+            _nameText.text = _name;
             _mainMenu.CheckSuccess(success, ID, false);
         }
 
         [Command]
         private void CmdBeginGame()
         {
-            _mainMenu.BeginGame(matchID);
-            Debug.Log("Игра начилась");
+            _mainMenu.BeginGame(_matchID);
         }
 
         [TargetRpc]
         private void TargetBeginGame()
         {
-            Debug.Log($"ID {matchID} | начало");
-            DontDestroyOnLoad(gameObject);
-            transform.localScale = new Vector3(1,1,1);
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
@@ -120,10 +127,10 @@ namespace PlayerSystem
                 vertical * _speed * Time.deltaTime));
         }
 
-        public void HostGame()
+        public void HostGame(string name)
         {
             string ID = RandomIdGenerator.GetRandomID();
-            CmdHostGame(ID);
+            CmdHostGame(ID, name);
         }
 
         public void StartGame()
@@ -136,9 +143,11 @@ namespace PlayerSystem
             CmdBeginGame();
         }
 
-        public void JoinGame(string inputID)
+        public void JoinGame(string inputID, string name)
         {
-            CmdJoinGame(inputID);
+            CmdJoinGame(inputID, name);
         }
+
+        public string GetName() => _name;
     }
 }
