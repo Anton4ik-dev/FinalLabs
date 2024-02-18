@@ -1,5 +1,7 @@
 using LobbySystem;
 using Mirror;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,8 +16,11 @@ namespace PlayerSystem
         [SerializeField] private TextMeshProUGUI _nameText;
 
         private InputListener _inputListener;
+        private PlayerData _playerData;
         private MainMenu _mainMenu;
+        private Guid _netIDGuid;
 
+        [SyncVar] public Match CurrentMatch;
         [SyncVar] private string _matchID;
         [SyncVar] private string _name;
 
@@ -31,17 +36,35 @@ namespace PlayerSystem
 
         private void Start()
         {
-            DontDestroyOnLoad(gameObject);
-            transform.localScale = new Vector3(1, 1, 1);
-            if (isLocalPlayer)
-                LocalPlayer = this;
-            else
-                _mainMenu.SpawnPlayerPrefab(this);
+            _nameText.text = _name;
         }
 
         private void OnDestroy()
         {
             Expose();
+        }
+        public override void OnStartServer()
+        {
+            _netIDGuid = netId.ToString().ToGuid();
+            _networkMatch.matchId = _netIDGuid;
+        }
+
+        public override void OnStartClient()
+        {
+            if (isLocalPlayer)
+                LocalPlayer = this;
+            else
+                _playerData = _mainMenu.SpawnPlayerPrefab(this);
+        }
+
+        public override void OnStopClient()
+        {
+            ClientDisconnect();
+        }
+
+        public override void OnStopServer()
+        {
+            ServerDisconnect();
         }
 
         private void Bind()
@@ -55,13 +78,13 @@ namespace PlayerSystem
         }
 
         [Command]
-        private void CmdHostGame(string ID, string name)
+        private void CmdHostGame(string ID, string name, bool publicMatch)
         {
             _matchID = ID;
             _name = name;
             _nameText.text = name;
 
-            if (_mainMenu.HostGame(ID, this))
+            if (_mainMenu.HostGame(ID, this, publicMatch))
             {
                 _networkMatch.matchId = ID.ToGuid();
                 TargetHostGame(true, ID, name);
@@ -118,7 +141,92 @@ namespace PlayerSystem
         [TargetRpc]
         private void TargetBeginGame()
         {
+            PlayerController[] players = FindObjectsOfType<PlayerController>();
+            for (int i = 0; i < players.Length; i++)
+            {
+                DontDestroyOnLoad(players[i]);
+            }
+            transform.localScale = new Vector3(1,1,1);
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
+        [Command]
+        private void CmdDisconnectGame()
+        {
+            ServerDisconnect();
+        }
+
+        [Command]
+        void CmdSearchGame()
+        {
+            if (_mainMenu.SearchGame(this, out _matchID))
+            {
+                _networkMatch.matchId = _matchID.ToGuid();
+                TargetSearchGame(true, _matchID); 
+                if (isServer && _playerData != null)
+                {
+                    _playerData.gameObject.SetActive(true);
+                }
+            }
+            else
+            {
+                TargetSearchGame(false, _matchID);
+            }
+        }
+
+        [TargetRpc]
+        void TargetSearchGame(bool success, string ID)
+        {
+            _matchID = ID;
+            _mainMenu.CheckSuccess(success, ID, false);
+        }
+
+        [Server]
+        public void PlayerCountUpdate(int playerCount)
+        {
+            TargetPlayerCountUpdate(playerCount);
+        }
+
+        [TargetRpc]
+        void TargetPlayerCountUpdate(int playerCount)
+        {
+            if (playerCount > 1)
+            {
+                _mainMenu.SetBeginButtonActive(true);
+            }
+            else
+            {
+                _mainMenu.SetBeginButtonActive(false);
+            }
+        }
+
+        [ClientRpc]
+        private void RpcDisconnectGame()
+        {
+            ClientDisconnect();
+        }
+
+        private void ClientDisconnect()
+        {
+            if (_playerData != null)
+            {
+                if (!isServer)
+                {
+                    Destroy(_playerData.gameObject);
+                    _playerData = null;
+                }
+                else
+                {
+                    _playerData.gameObject.SetActive(false);
+                }
+            }
+        }
+
+        private void ServerDisconnect()
+        {
+            _mainMenu.PlayerDisconnect(this, _matchID);
+            RpcDisconnectGame();
+            _networkMatch.matchId = _netIDGuid;
         }
 
         public void Move(float horizontal, float vertical)
@@ -127,10 +235,10 @@ namespace PlayerSystem
                 vertical * _speed * Time.deltaTime));
         }
 
-        public void HostGame(string name)
+        public void HostGame(string name, bool publicMatch)
         {
             string ID = RandomIdGenerator.GetRandomID();
-            CmdHostGame(ID, name);
+            CmdHostGame(ID, name, publicMatch);
         }
 
         public void StartGame()
@@ -146,6 +254,16 @@ namespace PlayerSystem
         public void JoinGame(string inputID, string name)
         {
             CmdJoinGame(inputID, name);
+        }
+
+        public void DisconnectGame()
+        {
+            CmdDisconnectGame();
+        }
+
+        public void SearchGame()
+        {
+            CmdSearchGame();
         }
 
         public string GetName() => _name;

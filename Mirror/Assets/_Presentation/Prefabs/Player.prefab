@@ -56,7 +56,7 @@ MonoBehaviour:
   syncInterval: 0
   _speed: 6
   _networkMatch: {fileID: 6355713467128128556}
-  _nameText: {fileID: 0}
+  _nameText: {fileID: 7415136729131713015}
 --- !u!114 &4181222710364159627
 MonoBehaviour:
   m_ObjectHideFlags: 0

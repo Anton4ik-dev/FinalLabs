@@ -8,7 +8,7 @@ namespace LobbySystem
         [SerializeField] private GameObject _spawnPoints;
         [SerializeField] private GameObject _inputListener;
 
-        private void Start()
+        private void Awake()
         {
             _mainMenu.SetActive(true);
             _spawnPoints.SetActive(true);
