@@ -128,7 +128,7 @@ namespace PlayerSystem
         {
             _matchID = ID;
             _name = name;
-            _nameText.text = _name;
+            _nameText.text = name;
             _mainMenu.CheckSuccess(success, ID, false);
         }
 
@@ -157,12 +157,14 @@ namespace PlayerSystem
         }
 
         [Command]
-        void CmdSearchGame()
+        void CmdSearchGame(string name)
         {
+            _name = name;
+            _nameText.text = name;
             if (_mainMenu.SearchGame(this, out _matchID))
             {
                 _networkMatch.matchId = _matchID.ToGuid();
-                TargetSearchGame(true, _matchID); 
+                TargetSearchGame(true, _matchID, name); 
                 if (isServer && _playerData != null)
                 {
                     _playerData.gameObject.SetActive(true);
@@ -170,14 +172,16 @@ namespace PlayerSystem
             }
             else
             {
-                TargetSearchGame(false, _matchID);
+                TargetSearchGame(false, _matchID, name);
             }
         }
 
         [TargetRpc]
-        void TargetSearchGame(bool success, string ID)
+        void TargetSearchGame(bool success, string ID, string name)
         {
             _matchID = ID;
+            _name = name;
+            _nameText.text = name;
             _mainMenu.CheckSuccess(success, ID, false);
         }
 
@@ -261,9 +265,9 @@ namespace PlayerSystem
             CmdDisconnectGame();
         }
 
-        public void SearchGame()
+        public void SearchGame(string name)
         {
-            CmdSearchGame();
+            CmdSearchGame(name);
         }
 
         public string GetName() => _name;

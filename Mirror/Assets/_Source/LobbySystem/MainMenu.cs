@@ -138,13 +138,11 @@ namespace LobbySystem
             while (_searching)
             {
                 if (currentTime > 0)
-                {
                     currentTime -= Time.deltaTime;
-                }
                 else
                 {
                     currentTime = searchInterval;
-                    PlayerController.LocalPlayer.SearchGame();
+                    PlayerController.LocalPlayer.SearchGame(_nameInput.text);
                 }
                 yield return null;
             }
