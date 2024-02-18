@@ -22,11 +22,14 @@ namespace LobbySystem
         [SerializeField] private Button _beginGameButton;
         [SerializeField] private Button _exitGameButton;
         [SerializeField] private Button _exitSearchingButton;
+        [SerializeField] private Button _sendMessage;
 
         [SerializeField] private TMP_InputField _joinInput;
         [SerializeField] private TMP_InputField _nameInput;
+        [SerializeField] private TMP_InputField _messageInput;
 
         [SerializeField] private TextMeshProUGUI _idText;
+        [SerializeField] private TextMeshProUGUI _chatHistoryText;
         
         [SerializeField] private PlayerData _playerDataPrefab;
         [SerializeField] private Lobby _lobbyPrefab;
@@ -39,7 +42,7 @@ namespace LobbySystem
         private bool _searching;
         private PlayerData _localPlayerData;
 
-        private void Start()
+        private void Awake()
         {
             Bind();
         }
@@ -47,6 +50,11 @@ namespace LobbySystem
         private void OnDestroy()
         {
             Expose();
+        }
+
+        private void OnLevelWasLoaded(int level)
+        {
+            gameObject.SetActive(false);
         }
 
         private void Bind()
@@ -60,6 +68,7 @@ namespace LobbySystem
 
             _searchButton.onClick.AddListener(SearchGame);
             _exitSearchingButton.onClick.AddListener(CancelSearchGame);
+            _sendMessage.onClick.AddListener(HandleMessage);
         }
 
         private void Expose()
@@ -124,6 +133,14 @@ namespace LobbySystem
         {
             ChangeButtonsState(true);
             _searching = false;
+        }
+
+        private void HandleMessage()
+        {
+            if(!string.IsNullOrWhiteSpace(_messageInput.text))
+            {
+                PlayerController.LocalPlayer.CmdHandleMessage(_messageInput.text);
+            }
         }
 
         private IEnumerator Searching()
@@ -282,6 +299,12 @@ namespace LobbySystem
                     break;
                 }
             }
+        }
+
+        public void SendMessageToServer(string message)
+        {
+            _chatHistoryText.text += message + "\n";
+            _messageInput.text = string.Empty;
         }
     }
 }

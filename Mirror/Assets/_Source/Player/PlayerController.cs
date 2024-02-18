@@ -1,7 +1,6 @@
 using LobbySystem;
 using Mirror;
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -157,7 +156,7 @@ namespace PlayerSystem
         }
 
         [Command]
-        void CmdSearchGame(string name)
+        private void CmdSearchGame(string name)
         {
             _name = name;
             _nameText.text = name;
@@ -177,7 +176,7 @@ namespace PlayerSystem
         }
 
         [TargetRpc]
-        void TargetSearchGame(bool success, string ID, string name)
+        private void TargetSearchGame(bool success, string ID, string name)
         {
             _matchID = ID;
             _name = name;
@@ -192,7 +191,7 @@ namespace PlayerSystem
         }
 
         [TargetRpc]
-        void TargetPlayerCountUpdate(int playerCount)
+        private void TargetPlayerCountUpdate(int playerCount)
         {
             if (playerCount > 1)
             {
@@ -208,6 +207,18 @@ namespace PlayerSystem
         private void RpcDisconnectGame()
         {
             ClientDisconnect();
+        }
+
+        [Command]
+        public void CmdHandleMessage(string message)
+        {
+            RpcHandleMessage($"{_name}: {message}");
+        }
+        
+        [ClientRpc]
+        private void RpcHandleMessage(string message)
+        {
+            _mainMenu.SendMessageToServer(message);
         }
 
         private void ClientDisconnect()
